@@ -1,0 +1,19 @@
+
+{
+  "apps": [
+    {
+      "name": "jam",
+      "cwd": "/home/app/jam/",
+      "script": "/home/app/jam/serve/jamserve.js",
+      "merge_logs": true,
+      "max_restarts": 40,
+      "instances": 1,
+      "max_memory_restart": "400M",
+      "error_file" : "/home/app/jam/logs/error.log",
+      "out_file" : "/home/app/jam/logs/jam.log",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
