@@ -1,8 +1,8 @@
 # start from node docker image
 FROM node:13-alpine
 
-ENV JAMSERVE_VERSION=v0.2.29-alpha
-ENV JAMBERRY_VERSION=v0.2.27-alpha
+ENV JAMSERVE_VERSION=v0.3.0-alpha
+ENV JAMBERRY_VERSION=v0.3.0-alpha
 
 # install ffmpeg
 COPY --from=mwader/static-ffmpeg:4.1 /ffmpeg /ffprobe /usr/local/bin/
@@ -86,9 +86,9 @@ ADD ./static/processes.json /home/app/processes.json
 ADD ./static/module_conf.json /home/app/.pm2/module_conf.json
 
 # copy jam default config
-ADD ./static/config.js /home/app/jam/config/config.js
-ADD ./static/firststart.config.js /home/app/jam/config/firststart.config.js
-ADD ./static/jamberry.config.js /home/app/jam/config/jamberry.config.js
+ADD ./static/.env /home/app/jam/serve/.env
+ADD ./static/firststart.config.js /home/app/jam/data/config/firststart.config.js
+ADD ./static/jamberry.config.js /home/app/jam/data/config/jamberry.config.js
 
 # rights for the user
 RUN chown -R app:app /home/app/jam/data
