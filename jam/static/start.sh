@@ -6,6 +6,6 @@ then
 fi
 
 echo "Starting App"
-cd /home/app
+cd /home/node
 pm2 start processes.json
 pm2 logs

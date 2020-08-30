@@ -4,7 +4,10 @@ a docker image build script for [jamserve](https://github.com/ffalt/jamserve) & 
 ### Build & Tag
 
 ```
-docker build -t ffalt/jam .
+docker build -t ffalt/jam-base ./base/
+docker tag ffalt/jam-base ffalt/jam-base:test
+
+docker build -t ffalt/jam ./jam/
 docker tag ffalt/jam ffalt/jam:test
 ```
 ### Test Run
