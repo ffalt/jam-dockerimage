@@ -7,13 +7,7 @@ ENV NODE_ENV=production
 # install app deamon
 RUN npm install --production --silent pm2 -g
 
-# install git & wget
-RUN apt-get install git wget
-RUN apt-get update && apt-get install --no-install-recommends -y \
-  git \
-  wget
-
-ENV JAMSERVE_VERSION=v0.3.3-alpha
+ENV JAMSERVE_VERSION=v0.3.4-alpha
 ENV JAMBERRY_VERSION=v0.3.3-alpha
 
 # get jamserve
@@ -39,7 +33,6 @@ ADD ./static/module_conf.json /home/node/.pm2/module_conf.json
 # copy jam default config
 ADD ./static/.env /home/node/jam/serve/.env
 ADD ./static/firststart.config.js /home/node/jam/data/config/firststart.config.js
-ADD ./static/jamberry.config.js /home/node/jam/data/config/jamberry.config.js
 
 # rights for the user
 RUN chown -R node:node /home/node/jam/data
