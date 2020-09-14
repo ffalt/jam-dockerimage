@@ -7,7 +7,7 @@ ENV NODE_ENV=production
 # install app deamon
 RUN npm install --production --silent pm2 -g
 
-ENV JAMSERVE_VERSION=v0.3.9-alpha
+ENV JAMSERVE_VERSION=v0.3.10-alpha
 ENV JAMBERRY_VERSION=v0.3.9-alpha
 
 # get jamserve
