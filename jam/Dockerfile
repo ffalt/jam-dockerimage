@@ -7,8 +7,8 @@ ENV NODE_ENV=production
 # install app deamon
 RUN npm install --production --silent pm2 -g
 
-ENV JAMSERVE_VERSION=v0.3.10-alpha
-ENV JAMBERRY_VERSION=v0.3.9-alpha
+ENV JAMSERVE_VERSION=v0.3.11-alpha
+ENV JAMBERRY_VERSION=v0.3.11-alpha
 
 # get jamserve
 RUN git -c advice.detachedHead=false clone -b ${JAMSERVE_VERSION} --depth=1 --single-branch https://github.com/ffalt/jamserve.git /home/node/jam/serve
