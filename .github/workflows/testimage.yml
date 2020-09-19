@@ -1,0 +1,23 @@
+name: Docker Jam Test Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'test/**'
+
+jobs:
+  build:
+    name: TestImage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build & Push the Test Docker image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          repository: ffalt/jam-test
+          tags: latest
+          path: ./test/
