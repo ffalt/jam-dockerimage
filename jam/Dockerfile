@@ -25,10 +25,10 @@ ADD ./static/processes.json /home/node/processes.json
 ADD ./static/module_conf.json /home/node/.pm2/module_conf.json
 
 # copy jam startup config
-ADD ./static/firststart.config.js /home/node/jam/data/config/firststart.config.js
+ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
-ENV JAMSERVE_VERSION=v0.4.13
-ENV JAMBERRY_VERSION=v0.4.9
+ENV JAMSERVE_VERSION=v0.5.0
+ENV JAMBERRY_VERSION=v0.4.10
 
 # get jamserve
 RUN cd /tmp && \
