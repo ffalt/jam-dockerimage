@@ -1,4 +1,4 @@
-# start from node docker image
+# start from jam base docker image
 FROM ffalt/jam-base:latest
 
 # set production environment
@@ -6,24 +6,14 @@ ENV NODE_ENV=production
 CMD sh /home/node/start.sh
 EXPOSE 4040
 
-# install app deamon
-RUN npm install --production --silent pm2 -g
-
 # ensure some paths
-RUN mkdir /home/node/jam
-RUN mkdir /home/node/jam/logs
-RUN mkdir /home/node/jam/data
-RUN mkdir /home/node/.pm2
-# rights for the user
-RUN chown -R node:node /home/node/jam/data
-RUN chown -R node:node /home/node/jam/logs
-RUN chown -R node:node /home/node/.pm2
+RUN mkdir -p /home/node/jam/logs && \
+ mkdir /home/node/jam/data && \
+ chown -R node:node /home/node/jam/data && \
+ chown -R node:node /home/node/jam/logs
 
 # copy pm2 helpers
 ADD ./static/start.sh /home/node/start.sh
-ADD ./static/processes.json /home/node/processes.json
-ADD ./static/module_conf.json /home/node/.pm2/module_conf.json
-
 # copy jam startup config
 ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
@@ -45,15 +35,26 @@ RUN cd /tmp && \
   unzip tmp.zip -d /home/node/jam/berry && \
   rm tmp.zip
 
+ARG TARGETPLATFORM
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    apt-get update && \
+    apt-get install --no-install-recommends -y python python3 build-essential \
+    ; fi
+
 # install app dependencies
 WORKDIR /home/node/jam/serve
 RUN npm install --production
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    apt-get remove -y python python3 build-essential  && \
+    apt-get autoremove -y && \
+    apt-get autoclean && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+    ; fi
 
 # change to user
 USER node
 # set home directory for user
 ENV HOME=/home/node
-
-# run pm2 to get rid of the ad displayed on first start
-RUN pm2 ls > /dev/null
-
