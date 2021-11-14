@@ -1,7 +1,9 @@
 # jam-dockerimage
 a docker image build script for [jamserve](https://github.com/ffalt/jamserve) & [jamberry](https://github.com/ffalt/jamberry)
 
-### Build & Tag
+Supported platforms: **AMD64**, **ARM64**
+
+### Single platform build
 
 ```
 docker build -t ffalt/jam-base ./base/
@@ -10,7 +12,18 @@ docker tag ffalt/jam-base ffalt/jam-base:test
 docker build -t ffalt/jam ./jam/
 docker tag ffalt/jam ffalt/jam:test
 ```
-### Test Run
+
+### Multi platform build
+
+```
+docker buildx build -t ffalt/jam-base ./base/
+docker tag ffalt/jam-base ffalt/jam-base:test
+
+docker buildx build -t ffalt/jam ./jam/
+docker tag ffalt/jam ffalt/jam:test
+```
+
+### Run
 
 ```
 docker run --publish 4040:4040 --name jam ffalt/jam:test
