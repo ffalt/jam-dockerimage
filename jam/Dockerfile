@@ -18,7 +18,7 @@ ADD ./static/start.sh /home/node/start.sh
 ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
 ENV JAMSERVE_VERSION=v0.5.5
-ENV JAMBERRY_VERSION=v0.4.14
+ENV JAMBERRY_VERSION=v0.4.15
 
 # get jamserve
 RUN cd /tmp && \
@@ -36,23 +36,22 @@ RUN cd /tmp && \
   rm tmp.zip
 
 ARG TARGETPLATFORM
-
-RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-    apt-get update && \
-    apt-get install --no-install-recommends -y python python3 build-essential \
-    ; fi
+WORKDIR /home/node/jam/serve
 
 # install app dependencies
-WORKDIR /home/node/jam/serve
-RUN npm install --production
-
-RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-    apt-get remove -y python python3 build-essential  && \
-    apt-get autoremove -y && \
-    apt-get autoclean && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* \
-    ; fi
+RUN case ${TARGETPLATFORM} in \
+         "linux/arm64")  \
+            apt-get update && \
+            apt-get install --no-install-recommends -y python python3 build-essential && \
+            npm install --production && \
+            apt-get remove -y python python3 build-essential  && \
+            apt-get autoremove -y && \
+            apt-get autoclean && \
+            apt-get clean && \
+            rm -rf /var/lib/apt/lists/* \
+          ;; \
+          *) npm install --production ;; \
+    esac
 
 # change to user
 USER node
