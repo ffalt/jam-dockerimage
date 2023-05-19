@@ -18,7 +18,7 @@ ADD ./static/start.sh /home/node/start.sh
 ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
 ENV JAMSERVE_VERSION=v0.5.17
-ENV JAMBERRY_VERSION=v0.4.21
+ENV JAMBERRY_VERSION=v0.4.22
 
 # get jamserve
 RUN cd /tmp && \
