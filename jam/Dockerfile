@@ -17,7 +17,7 @@ ADD ./static/start.sh /home/node/start.sh
 # copy jam startup config
 ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
-ENV JAMSERVE_VERSION=v0.5.21
+ENV JAMSERVE_VERSION=v0.5.22
 ENV JAMBERRY_VERSION=v0.4.24
 
 # get jamserve
