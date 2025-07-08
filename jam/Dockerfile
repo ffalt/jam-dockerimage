@@ -3,37 +3,35 @@ FROM ffalt/jam-base:latest
 
 # set production environment
 ENV NODE_ENV=production
-CMD sh /home/node/start.sh
+CMD ["sh", "/home/node/start.sh"]
 EXPOSE 4040
 
 # ensure some paths
-RUN mkdir -p /home/node/jam/logs && \
- mkdir /home/node/jam/data && \
- chown -R node:node /home/node/jam/data && \
- chown -R node:node /home/node/jam/logs
+RUN mkdir -p /home/node/jam/logs \
+    && mkdir /home/node/jam/data \
+    && chown -R node:node /home/node/jam/data \
+    && chown -R node:node /home/node/jam/logs
 
 # copy pm2 helpers
-ADD ./static/start.sh /home/node/start.sh
+COPY ./static/start.sh /home/node/start.sh
 # copy jam startup config
-ADD ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
+COPY ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
 ENV JAMSERVE_VERSION=v0.5.26
 ENV JAMBERRY_VERSION=v0.4.27
 
 # get jamserve
-RUN cd /tmp && \
-  curl -L -o tmp.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip && \
-  unzip tmp.zip -d /home/node/jam/serve && \
-  rm tmp.zip
+RUN curl -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip \
+    && unzip /tmp/serve.zip -d /home/node/jam/serve \
+    && rm /tmp/serve.zip
 
 # copy jamserve default config
-ADD ./static/.env /home/node/jam/serve/.env
+COPY ./static/.env /home/node/jam/serve/.env
 
 # get jamberry
-RUN cd /tmp && \
-  curl -L -o tmp.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip && \
-  unzip tmp.zip -d /home/node/jam/berry && \
-  rm tmp.zip
+RUN curl -L -o /tmp/berry.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip \
+    && unzip /tmp/berry.zip -d /home/node/jam/berry \
+    && rm /tmp/berry.zip
 
 ARG TARGETPLATFORM
 WORKDIR /home/node/jam/serve
@@ -42,9 +40,9 @@ WORKDIR /home/node/jam/serve
 RUN case ${TARGETPLATFORM} in \
          "linux/arm64")  \
             apt-get update && \
-            apt-get install --no-install-recommends -y python python3 build-essential && \
+            apt-get install --no-install-recommends -y build-essential python python3 && \
             npm install --production && \
-            apt-get remove -y python python3 build-essential  && \
+            apt-get remove -y build-essential python python3 && \
             apt-get autoremove -y && \
             apt-get autoclean && \
             apt-get clean && \
