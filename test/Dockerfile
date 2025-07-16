@@ -6,4 +6,3 @@ RUN apt-get update \
     && apt-get autoclean \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-USER node
