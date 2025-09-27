@@ -23,8 +23,8 @@ COPY ./static/start.sh /home/node/start.sh
 # copy jam startup config
 COPY ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
-ENV JAMSERVE_VERSION=v0.5.26
-ENV JAMBERRY_VERSION=v0.4.27
+ENV JAMSERVE_VERSION=v0.6.0
+ENV JAMBERRY_VERSION=v0.6.0
 
 # get jamserve
 RUN curl -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip \
