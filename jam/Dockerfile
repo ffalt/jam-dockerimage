@@ -47,7 +47,7 @@ RUN case ${TARGETPLATFORM} in \
          "linux/arm64")  \
             apt-get update && \
             apt-get install --no-install-recommends -y build-essential python python3 && \
-            npm install --production && \
+            npm install --omit=dev && \
             apt-get remove -y build-essential python python3 && \
             apt-get autoremove -y && \
             apt-get autoclean && \
