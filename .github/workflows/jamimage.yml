@@ -26,6 +26,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Get latest versions
+        id: versions
+        run: bash scripts/get-versions.sh
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -33,3 +36,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ffalt/jam:latest
+          build-args: |
+            JAMSERVE_VERSION=${{ steps.versions.outputs.jamserve_version }}
+            JAMBERRY_VERSION=${{ steps.versions.outputs.jamberry_version }}
