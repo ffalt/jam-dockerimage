@@ -1,4 +1,4 @@
-FROM node:22-bullseye-slim
+FROM node:24-bullseye-slim
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         ca-certificates curl ffmpeg flac libchromaprint-tools mp3val nano unzip \
