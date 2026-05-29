@@ -1,4 +1,4 @@
-FROM node:26-bullseye-slim AS base
+FROM node:26-bookworm-slim AS base
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
