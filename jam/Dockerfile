@@ -1,4 +1,5 @@
-FROM node:26-bullseye-slim
+FROM node:26-bullseye-slim AS base
+
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         ca-certificates curl ffmpeg flac libchromaprint-tools mp3val unzip \
@@ -13,7 +14,7 @@ RUN mkdir -p /home/node/jam/logs \
     && chown -R node:node /home/node/jam/data \
     && chown -R node:node /home/node/jam/logs
 
-# copy pm2 helpers
+# copy startup script
 COPY ./static/start.sh /home/node/start.sh
 # copy jam startup config, this is not owned by node:node because it should not be writeable, only readable
 COPY ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
@@ -36,23 +37,24 @@ RUN curl --fail -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/
 COPY ./static/.env /home/node/jam/serve/.env
 
 ENV NODE_ENV=production
-ARG TARGETPLATFORM
 WORKDIR /home/node/jam/serve
 
-# install app dependencies
+# install app dependencies - arm64 requires native build tools for some packages;
+# build tools are installed here and discarded with this stage, keeping the final image clean
+FROM base AS builder
+ARG TARGETPLATFORM
 RUN case ${TARGETPLATFORM} in \
-         "linux/arm64")  \
+         "linux/arm64") \
             apt-get update && \
             apt-get install --no-install-recommends -y build-essential python3 && \
-            npm install --omit=dev && \
-            apt-get remove -y build-essential python3 && \
-            apt-get autoremove -y && \
-            apt-get autoclean && \
-            apt-get clean && \
-            rm -rf /var/lib/apt/lists/* \
+            npm install --omit=dev \
           ;; \
           *) npm install --omit=dev ;; \
     esac
+
+# final image - copy only node_modules from builder, no build tools included
+FROM base AS final
+COPY --from=builder /home/node/jam/serve/node_modules ./node_modules
 
 # change to user
 USER node
