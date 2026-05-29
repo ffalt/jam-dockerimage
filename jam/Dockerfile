@@ -1,26 +1,21 @@
 FROM node:26-bullseye-slim
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-        ca-certificates curl ffmpeg flac libchromaprint-tools mp3val nano unzip \
+        ca-certificates curl ffmpeg flac libchromaprint-tools mp3val unzip \
     && apt-get autoremove -y \
     && apt-get autoclean \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# set production environment
-ENV NODE_ENV=production
-CMD ["sh", "/home/node/start.sh"]
-EXPOSE 4040
-
 # ensure some paths
 RUN mkdir -p /home/node/jam/logs \
-    && mkdir /home/node/jam/data \
+    && mkdir -p /home/node/jam/data \
     && chown -R node:node /home/node/jam/data \
     && chown -R node:node /home/node/jam/logs
 
 # copy pm2 helpers
 COPY ./static/start.sh /home/node/start.sh
-# copy jam startup config
+# copy jam startup config, this is not owned by node:node because it should not be writeable, only readable
 COPY ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
 ARG JAMSERVE_VERSION=v0.6.5
@@ -28,19 +23,19 @@ ARG JAMBERRY_VERSION=v0.6.5
 ENV JAMSERVE_VERSION=${JAMSERVE_VERSION}
 ENV JAMBERRY_VERSION=${JAMBERRY_VERSION}
 
-# get jamserve
+# get jamserve & jamberry
+# currently without sha256 check to always get the latest release, but this should be changed in the future to ensure integrity of the downloaded file
 RUN curl --fail -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip \
     && unzip /tmp/serve.zip -d /home/node/jam/serve \
-    && rm /tmp/serve.zip
+    && rm /tmp/serve.zip \
+    && curl --fail -L -o /tmp/berry.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip \
+    && unzip /tmp/berry.zip -d /home/node/jam/berry \
+    && rm /tmp/berry.zip
 
 # copy jamserve default config
 COPY ./static/.env /home/node/jam/serve/.env
 
-# get jamberry
-RUN curl --fail -L -o /tmp/berry.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip \
-    && unzip /tmp/berry.zip -d /home/node/jam/berry \
-    && rm /tmp/berry.zip
-
+ENV NODE_ENV=production
 ARG TARGETPLATFORM
 WORKDIR /home/node/jam/serve
 
@@ -50,7 +45,7 @@ RUN case ${TARGETPLATFORM} in \
             apt-get update && \
             apt-get install --no-install-recommends -y build-essential python3 && \
             npm install --omit=dev && \
-            apt-get remove -y build-essential python python3 && \
+            apt-get remove -y build-essential python3 && \
             apt-get autoremove -y && \
             apt-get autoclean && \
             apt-get clean && \
@@ -63,3 +58,5 @@ RUN case ${TARGETPLATFORM} in \
 USER node
 # set home directory for user
 ENV HOME=/home/node
+CMD ["sh", "/home/node/start.sh"]
+EXPOSE 4040
