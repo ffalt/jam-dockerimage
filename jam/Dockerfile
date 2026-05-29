@@ -1,4 +1,4 @@
-FROM node:24-bullseye-slim
+FROM node:26-bullseye-slim
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         ca-certificates curl ffmpeg flac libchromaprint-tools mp3val nano unzip \
@@ -29,7 +29,7 @@ ENV JAMSERVE_VERSION=${JAMSERVE_VERSION}
 ENV JAMBERRY_VERSION=${JAMBERRY_VERSION}
 
 # get jamserve
-RUN curl -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip \
+RUN curl --fail -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/download/${JAMSERVE_VERSION}/jamserve-release.zip \
     && unzip /tmp/serve.zip -d /home/node/jam/serve \
     && rm /tmp/serve.zip
 
@@ -37,7 +37,7 @@ RUN curl -L -o /tmp/serve.zip https://github.com/ffalt/jamserve/releases/downloa
 COPY ./static/.env /home/node/jam/serve/.env
 
 # get jamberry
-RUN curl -L -o /tmp/berry.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip \
+RUN curl --fail -L -o /tmp/berry.zip https://github.com/ffalt/jamberry/releases/download/${JAMBERRY_VERSION}/jamberry-release.zip \
     && unzip /tmp/berry.zip -d /home/node/jam/berry \
     && rm /tmp/berry.zip
 
@@ -48,7 +48,7 @@ WORKDIR /home/node/jam/serve
 RUN case ${TARGETPLATFORM} in \
          "linux/arm64")  \
             apt-get update && \
-            apt-get install --no-install-recommends -y build-essential python python3 && \
+            apt-get install --no-install-recommends -y build-essential python3 && \
             npm install --omit=dev && \
             apt-get remove -y build-essential python python3 && \
             apt-get autoremove -y && \
@@ -56,7 +56,7 @@ RUN case ${TARGETPLATFORM} in \
             apt-get clean && \
             rm -rf /var/lib/apt/lists/* \
           ;; \
-          *) npm install --production ;; \
+          *) npm install --omit=dev ;; \
     esac
 
 # change to user
