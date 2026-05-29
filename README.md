@@ -7,9 +7,6 @@ Supported platforms: **AMD64**, **ARM64**
 ## Single platform build
 
 ```shell
-docker build -t ffalt/jam-base ./base/
-docker tag ffalt/jam-base ffalt/jam-base:test
-
 docker build -t ffalt/jam ./jam/
 docker tag ffalt/jam ffalt/jam:test
 ```
@@ -17,23 +14,16 @@ docker tag ffalt/jam ffalt/jam:test
 ## Multi platform build
 
 ```shell
-docker buildx build -t ffalt/jam-base ./base/
-docker tag ffalt/jam-base ffalt/jam-base:test
-
 docker buildx build -t ffalt/jam ./jam/
 docker tag ffalt/jam ffalt/jam:test
 ```
 
-## Run
+## Test image build
 
 ```shell
-docker run --publish 4040:4040 --name jam ffalt/jam:test
+docker buildx build -t ffalt/jam-test ./test/
+docker tag ffalt/jam-test ffalt/jam-test:test
 ```
 
-open <http://localhost:4040>
-
-### default login
-
-user: admin
-
-password: admin
+## Usage
+see <https://github.com/ffalt/jam-docker> for usage
