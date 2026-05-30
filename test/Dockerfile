@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-        ca-certificates curl ffmpeg flac libchromaprint-tools mp3val unzip gettext git \
+        ca-certificates curl ffmpeg flac libchromaprint-tools mp3val unzip gettext git libatomic1 \
     && apt-get autoremove -y \
     && apt-get autoclean \
     && apt-get clean \
