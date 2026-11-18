@@ -16,11 +16,9 @@ RUN mkdir -p /home/node/jam/logs \
 
 # copy startup script
 COPY ./static/start.sh /home/node/start.sh
-# copy jam startup config, this is not owned by node:node because it should not be writeable, only readable
-COPY ./static/firststart.config.json /home/node/jam/data/config/firststart.config.json
 
-ARG JAMSERVE_VERSION=v0.6.5
-ARG JAMBERRY_VERSION=v0.6.5
+ARG JAMSERVE_VERSION=v0.6.20
+ARG JAMBERRY_VERSION=v0.6.20
 ENV JAMSERVE_VERSION=${JAMSERVE_VERSION}
 ENV JAMBERRY_VERSION=${JAMBERRY_VERSION}
 
