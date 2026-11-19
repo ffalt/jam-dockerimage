@@ -2,8 +2,7 @@
 set -euo pipefail
 
 fetch_latest_tag() {
-  local repo="$1"
-  curl -sf "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name'
+  gh release view --repo "$1" --json tagName --jq '.tagName'
 }
 
 JAMSERVE_VERSION=$(fetch_latest_tag "ffalt/jamserve")

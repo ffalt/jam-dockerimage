@@ -30,6 +30,8 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
       - name: Get latest versions
         id: versions
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: bash scripts/get-versions.sh
       - name: Build and push
         uses: docker/build-push-action@v7.4.0
